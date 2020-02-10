@@ -47,8 +47,6 @@ function (ψ::AMFMcomp)(t::StepRangeLen)
 end
 
 
-
-
 #Construction of type AMFMcomp from a cannonical triplet
 function AMFMcomp(triplet::Tuple{Function, Function, Real})
       return AMFMcomp(triplet[1],triplet[2],triplet[3])
