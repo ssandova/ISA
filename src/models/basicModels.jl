@@ -22,7 +22,16 @@ function AMFMmodel(triplets::Vector{Tuple{Function, Function, Real}})
   return AMFMmodel(Vector(components))
 end
 
-#Construct fourierSeries as a type AMFMmodel with a sepecific form 
+function (z::AMFMmodel)(t::Float64)
+  return (z::AMFMmodel)([t::Float64])[1]
+end
+
+function (z::AMFMmodel)(t::StepRangeLen)
+  return (z::AMFMmodel)(collect(t))
+end
+
+
+#Construct fourierSeries as a type AMFMmodel with a sepecific form
 function fourierSeries(T::Real, aₖ::Function, kInds::Array{Int,1}=Vector(-1000:1000))
   components = []
   for k in kInds

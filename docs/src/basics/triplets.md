@@ -1,6 +1,6 @@
-#Cannonical Triplets and Component Sets
+# Cannonical Triplets and Component Sets
 
-##Cannonical Triplets
+## Cannonical Triplets
 
 A **cannonical triplet** is a tuple consisting of an instantaneous amplitude (IA) `Function`, an instantaneous frequency (IF) `Function`, and a phase reference `Real`.
 
@@ -20,7 +20,7 @@ julia> 𝐶₀ = (a₀,ω₀,φ₀)
 (a₀, ω₀, 0.0)
 ```
 
-##Component Sets
+## Component Sets
 A **component set** is a set of **cannonical triplets**.
 
 ### Defining a Component Set

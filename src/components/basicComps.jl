@@ -42,6 +42,13 @@ function (ψ::AMFMcomp)(t::Float64)
   return (ψ::AMFMcomp)([t::Float64])[1]
 end
 
+function (ψ::AMFMcomp)(t::StepRangeLen)
+  return (ψ::AMFMcomp)(collect(t))
+end
+
+
+
+
 #Construction of type AMFMcomp from a cannonical triplet
 function AMFMcomp(triplet::Tuple{Function, Function, Real})
       return AMFMcomp(triplet[1],triplet[2],triplet[3])

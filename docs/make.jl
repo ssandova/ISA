@@ -6,7 +6,7 @@ makedocs(;
     pages=[
         "Home" => "index.md",
         "Basics" =>
-                    ["Cannonical Triplets"   => "basics/triplets.md",
+                    ["Cannonical Triplets and Component Sets"   => "basics/triplets.md",
                      "AM--FM Components"     => "basics/components.md",
                      "AM--FM Models"         => "basics/models.md",
                      "Instantaneous Spectra" => "basics/spectra.md",],
