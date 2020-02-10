@@ -38,6 +38,10 @@ function (ψ::AMFMcomp)(t::Vector{Float64})
   a.(t) .* exp.( π*2im .* ( θ .+ φ ) )
 end
 
+function (ψ::AMFMcomp)(t::Float64)
+  return (ψ::AMFMcomp)([t::Float64])[1]
+end
+
 #Construction of type AMFMcomp from a cannonical triplet
 function AMFMcomp(triplet::Tuple{Function, Function, Real})
       return AMFMcomp(triplet[1],triplet[2],triplet[3])
