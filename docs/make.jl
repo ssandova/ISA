@@ -6,7 +6,8 @@ makedocs(;
     pages=[
         "Home" => "index.md",
         "Basics" =>
-                    ["AM--FM Components"     => "basics/components.md",
+                    ["Cannonical Triplets"   => "basics/triplets.md",
+                     "AM--FM Components"     => "basics/components.md",
                      "AM--FM Models"         => "basics/models.md",
                      "Instantaneous Spectra" => "basics/spectra.md",],
 
@@ -17,6 +18,13 @@ makedocs(;
     assets=String[],
 )
 
-deploydocs(;
-    repo="github.com/ssandova/ISA.jl",
-)
+
+
+
+
+
+
+
+#deploydocs(;
+#    repo="github.com/ssandova/ISA.jl",
+#)
