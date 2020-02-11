@@ -18,7 +18,7 @@ using ISA
 ## Visualizing an Instantaneous Spectrum
 We can visualize a 3-D IS as follows. First, define a **component set**.
 ```
-a₀(t) = exp(-t²)
+a₀(t) = exp(-t^2)
 ω₀(t) = 2.0
 φ₀ = 0.0
 𝐶₀ = (a₀,ω₀,φ₀)

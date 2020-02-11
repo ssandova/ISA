@@ -12,7 +12,7 @@ using ISA
 ## Defining an AM--FM Component
 We define an **AM--FM component** `AMFMcomp` by passing the function `AMFMcomp()` a **cannonical triplet**. First define a **cannonical triplet**.
 ```
-a₀(t) = exp(-t²)
+a₀(t) = exp(-t^2)
 ω₀(t) = 2.0
 φ₀ = 0.0
 𝐶₀ = (a₀,ω₀,φ₀)
@@ -26,7 +26,7 @@ AMFMcomp(a₀, ω₀, 0.0)
 
 We also allow an **AM--FM component** `AMFMcomp` to be defined by passing the function `AMFMcomp()` an instantaneous amplitude (IA) `Function`, an instantaneous frequency (IF) `Function`, and a phase reference `Real`.
 ```
-a₀(t) = exp(-t²)
+a₀(t) = exp(-t^2)
 ω₀(t) = 2.0
 φ₀ = 0.0
 ```
@@ -54,3 +54,13 @@ julia> ψ₀(t)
   -0.569782824730923 + 2.0933481375475864e-16im
  0.36787944117144233 - 1.8020895204108955e-16im
 ```
+
+Another example of evaluating an **AM--FM component** over a range of time instants using the `Plots` module follows.
+```
+using Plots
+t = 0.0:0.005:2.0
+p1 = plot(t, real(ψ₀(t)), xlab="t", ylab="real", legend = :false)
+p2 = plot(t, imag(ψ₀(t)), xlab="t", ylab="imag", legend = :false )
+plot(p1, p2, layout = (2,1))
+```
+[![](https://raw.githubusercontent.com/ssandova/ISAdocs/master/images/CompEval.png)](https://raw.githubusercontent.com/ssandova/ISAdocs/master/images/CompEval.png)
