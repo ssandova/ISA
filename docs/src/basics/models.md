@@ -1,11 +1,13 @@
 # AM--FM Models
+A **component set** `Array{Tuple{Function,Function,Real},1}` maps to an **AM--FM model** `AMFMmodel`. This mapping is provided in the ISA module.
+```
+using ISA
+```
 
-An **AM--FM model** is a set of superimposed **AM--FM components**.
 
 ## Defining an AM--FM Model
-
-For example, we can define a **AM--FM model** as follows. First, define a **component set**.
-```julia codeSnippet
+We can define an **AM--FM model** as follows. First, define a **component set**.
+```
 a₀(t) = exp(-t^2)
 ω₀(t) = 2.0
 φ₀ = 0.0
@@ -14,22 +16,22 @@ a₀(t) = exp(-t^2)
 a₁(t) = 1.0
 ω₁(t) = 10*t
 φ₁ = 0.1
-𝐶₁ = Tuple([a₁,ω₁,φ₁])
+𝐶₁ = (a₁,ω₁,φ₁)
 
 a₂(t) = 0.8*cos(2t)
 ω₂(t) = 10 + 7.5*sin(t)
 φ₂ = π
-𝐶₂ = Tuple([a₂,ω₂,φ₂])
+𝐶₂ = (a₂,ω₂,φ₂)
 
 𝑆 = [𝐶₀,𝐶₁,𝐶₂]
 ```
-Then, define an **AM--FM model** by passing the function `AMFMmodel` the **component set**.
-```julia codeSnippet
+Then, pass the **component set** to the function `AMFMmodel()`.
+```
 z = AMFMmodel(𝑆)
 ```
 
-Alternately, we allow an **AM--FMmodel**  to be defined by passing the function `AMFMmodel` an array of components. First, define a the components.
-```julia codeSnippet
+We also allow an **AM--FMmodel** `AMFMmodel` to be defined by passing an array of components the function `AMFMmodel()`. First, define the components.
+```
 a₀(t) = exp(-t^2)
 ω₀(t) = 2.0
 φ₀ = 0.0
@@ -45,21 +47,20 @@ a₂(t) = 0.8*cos(2t)
 φ₂ = π
 ψ₂ = AMFMcomp(a₂,ω₂,φ₂)
 ```
-Then pass them to the function `AMFMmodel` as an array.
-```julia codeSnippet
+Then pass the and array of the components to the function `AMFMmodel()`.
+```
 z = AMFMmodel([ψ₀,ψ₁,ψ₂])
 ```
 
 
 ## Evaluating an AM--FM Model
-
-Once an  **AM--FM model** is defined it can be evaluated at a time instant
-```julia codeSnippet
+Once an  **AM--FM model** `AMFMmodel` is defined it can be evaluated at a time instant `Float64`
+```
 julia> z(0.15)
 -0.1844131722041218 + 1.146808452231523im
 ```
-or over a range of time instants.
-```julia codeSnippet
+or over a range of time instants `Array{Float64,1}`.
+```
 julia> t = 0.0:0.25:1.0
 julia> z(t)
 5-element Array{Complex{Float64},1}:
@@ -68,4 +69,4 @@ julia> z(t)
   0.5931797251405191 + 0.9674372363846413im
  0.25073410019471093 - 0.5690871746595758im
   1.4587415832942454 + 0.7649782375222325im
- ```
+```

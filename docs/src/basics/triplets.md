@@ -1,12 +1,11 @@
 # Cannonical Triplets and Component Sets
 
 ## Cannonical Triplets
-
-A **cannonical triplet** is a tuple consisting of an instantaneous amplitude (IA) `Function`, an instantaneous frequency (IF) `Function`, and a phase reference `Real`.
+A **cannonical triplet** `Tuple{Function,Function,Real}` is a tuple consisting of an instantaneous amplitude (IA) `Function`, an instantaneous frequency (IF) `Function`, and a phase reference `Real`.
 
 ### Defining a Cannonical Triplet
-For example, we can define a **cannonical triplet** as follows.
-```julia codeSnippet
+We can define a **cannonical triplet** as follows.
+```
 julia> a₀(t) = exp(-t^2)
 a₀ (generic function with 1 method)
 
@@ -21,11 +20,11 @@ julia> 𝐶₀ = (a₀,ω₀,φ₀)
 ```
 
 ## Component Sets
-A **component set** is a set of **cannonical triplets**.
+A **component set** `Array{Tuple{Function,Function,Real},1}` is a set of **cannonical triplet** `Tuple{Function,Function,Real}` .
 
 ### Defining a Component Set
-For example, we can define a **component set** as follows. First, we define several cannonical triplets.
-```julia codeSnippet
+We can define a **component set** as follows. First, we define several **cannonical triplet**.
+```
 a₀(t) = exp(-t^2)
 ω₀(t) = 2.0
 φ₀ = 0.0
@@ -42,7 +41,7 @@ a₂(t) = 0.8*cos(2t)
 𝐶₂ = (a₂,ω₂,φ₂)
 ```
 Then, store the **cannonical triplets** in an array.
-```julia codeSnippet
+```
 julia> 𝑆 = [𝐶₀,𝐶₁,𝐶₂]
 3-element Array{Tuple{Function,Function,Real},1}:
  (a₀, ω₀, 0.0)
