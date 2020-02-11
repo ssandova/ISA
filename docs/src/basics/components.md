@@ -12,7 +12,7 @@ using ISA
 ## Defining an AM--FM Component
 We define an **AM--FM component** `AMFMcomp` by passing the function `AMFMcomp()` a **cannonical triplet**. First define a **cannonical triplet**.
 ```
-a₀(t) = exp(-t^2)
+a₀(t) = exp(-t²)
 ω₀(t) = 2.0
 φ₀ = 0.0
 𝐶₀ = (a₀,ω₀,φ₀)
@@ -26,7 +26,7 @@ AMFMcomp(a₀, ω₀, 0.0)
 
 We also allow an **AM--FM component** `AMFMcomp` to be defined by passing the function `AMFMcomp()` an instantaneous amplitude (IA) `Function`, an instantaneous frequency (IF) `Function`, and a phase reference `Real`.
 ```
-a₀(t) = exp(-t^2)
+a₀(t) = exp(-t²)
 ω₀(t) = 2.0
 φ₀ = 0.0
 ```

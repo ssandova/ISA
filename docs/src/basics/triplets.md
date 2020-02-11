@@ -8,7 +8,7 @@ $\mathscr{C}\triangleq\left\{a(t),\omega(t), \phi\vphantom{0^0}\right\}$
 ### Defining a Cannonical Triplet
 We can define a **cannonical triplet** as follows.
 ```
-julia> a₀(t) = exp(-t^2)
+julia> a₀(t) = exp(-t²)
 a₀ (generic function with 1 method)
 
 julia> ω₀(t) = 2.0
@@ -29,7 +29,7 @@ $\mathscr{S}\triangleq\left\{\mathscr{C}_0,\mathscr{C}_1,\cdots,\mathscr{C}_{K-1
 ### Defining a Component Set
 We can define a **component set** as follows. First, we define several **cannonical triplet**.
 ```
-a₀(t) = exp(-t^2)
+a₀(t) = exp(-t²)
 ω₀(t) = 2.0
 φ₀ = 0.0
 𝐶₀ = (a₀,ω₀,φ₀)

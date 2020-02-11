@@ -12,7 +12,7 @@ using ISA
 ## Defining an AM--FM Model
 We can define an **AM--FM model** as follows. First, define a **component set**.
 ```
-a₀(t) = exp(-t^2)
+a₀(t) = exp(-t²)
 ω₀(t) = 2.0
 φ₀ = 0.0
 𝐶₀ = (a₀,ω₀,φ₀)
@@ -36,7 +36,7 @@ z = AMFMmodel(𝑆)
 
 We also allow an **AM--FM model** `AMFMmodel` to be defined by passing an array of `AMFMcomp` to the function `AMFMmodel()`. First, define the components.
 ```
-a₀(t) = exp(-t^2)
+a₀(t) = exp(-t²)
 ω₀(t) = 2.0
 φ₀ = 0.0
 ψ₀ = AMFMcomp(a₀,ω₀,φ₀)
