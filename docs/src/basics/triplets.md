@@ -3,6 +3,8 @@
 ## Cannonical Triplets
 A **cannonical triplet** `Tuple{Function,Function,Real}` is a tuple consisting of an instantaneous amplitude (IA) `Function`, an instantaneous frequency (IF) `Function`, and a phase reference `Real`.
 
+$\mathscr{C}\triangleq\left\{a(t),\omega(t), \phi\vphantom{0^0}\right\}$
+
 ### Defining a Cannonical Triplet
 We can define a **cannonical triplet** as follows.
 ```
@@ -21,6 +23,8 @@ julia> 𝐶₀ = (a₀,ω₀,φ₀)
 
 ## Component Sets
 A **component set** `Array{Tuple{Function,Function,Real},1}` is a set of **cannonical triplet** `Tuple{Function,Function,Real}` .
+
+$\mathscr{S}\triangleq\left\{\mathscr{C}_0,\mathscr{C}_1,\cdots,\mathscr{C}_{K-1}\vphantom{0^0}\right\}$
 
 ### Defining a Component Set
 We can define a **component set** as follows. First, we define several **cannonical triplet**.

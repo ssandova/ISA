@@ -1,5 +1,9 @@
 # AM--FM Components
-A **component triplet** `Tuple{Function,Function,Real}` maps to an **AM--FM component** `AMFMcomp`. This mapping is provided in the ISA module.
+A **component triplet** `Tuple{Function,Function,Real}` maps to an **AM--FM component** `AMFMcomp`.
+
+$\psi_k \left( t ; \mathscr{C}_k \vphantom{0^0}\right) \triangleq a_k(t) \exp\left(\mathrm{j} \left[\int_{-\infty}^{t} \omega_k(\tau)\mathrm{d}\tau +\phi_k\right] \right)$
+
+This mapping is provided in the ISA module.
 ```
 using ISA
 ```

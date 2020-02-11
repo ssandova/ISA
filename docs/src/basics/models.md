@@ -1,5 +1,9 @@
 # AM--FM Models
-A **component set** `Array{Tuple{Function,Function,Real},1}` maps to an **AM--FM model** `AMFMmodel`. This mapping is provided in the ISA module.
+A **component set** `Array{Tuple{Function,Function,Real},1}` maps to an **AM--FM model** `AMFMmodel`.
+
+$z\left( t ; \mathscr{S} \vphantom{0^0}\right)  \triangleq \sum\limits_{k=0}^{K-1}\psi_k\left( t ; \mathscr{C}_k \vphantom{0^0}\right),~\mathscr{S}\triangleq\left\{\mathscr{C}_0,\mathscr{C}_1,\cdots,\mathscr{C}_{K-1}\vphantom{0^0}\right\}$
+
+This mapping is provided in the ISA module.
 ```
 using ISA
 ```
@@ -30,7 +34,7 @@ Then, pass the **component set** to the function `AMFMmodel()`.
 z = AMFMmodel(𝑆)
 ```
 
-We also allow an **AM--FMmodel** `AMFMmodel` to be defined by passing an array of components the function `AMFMmodel()`. First, define the components.
+We also allow an **AM--FM model** `AMFMmodel` to be defined by passing an array of `AMFMcomp` to the function `AMFMmodel()`. First, define the components.
 ```
 a₀(t) = exp(-t^2)
 ω₀(t) = 2.0
@@ -47,7 +51,7 @@ a₂(t) = 0.8*cos(2t)
 φ₂ = π
 ψ₂ = AMFMcomp(a₂,ω₂,φ₂)
 ```
-Then pass the and array of the components to the function `AMFMmodel()`.
+Then pass the array of `AMFMcomp` to the function `AMFMmodel()`.
 ```
 z = AMFMmodel([ψ₀,ψ₁,ψ₂])
 ```
