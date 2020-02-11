@@ -60,7 +60,7 @@ Another example of evaluating an **AM--FM component** over a range of time insta
 using Plots
 t = 0.0:0.005:2.0
 p1 = plot(t, real(ψ₀(t)), xlab="t", ylab="real", legend = :false)
-p2 = plot(t, imag(ψ₀(t)), xlab="t", ylab="imag", legend = :false )
+p2 = plot(t, imag(ψ₀(t)), xlab="t", ylab="imag", legend = :false)
 plot(p1, p2, layout = (2,1))
 ```
 [![](https://raw.githubusercontent.com/ssandova/ISAdocs/master/images/CompEval.png)](https://raw.githubusercontent.com/ssandova/ISAdocs/master/images/CompEval.png)
