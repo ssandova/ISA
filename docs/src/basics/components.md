@@ -40,7 +40,8 @@ AMFMcomp(a₀, ω₀, 0.0)
 ## Evaluating an AM--FM Component
 Once an  **AM--FM component** `AMFMcomp` is defined it can be evaluated at a time instant `Float64`
 ```
-julia> ψ₀(0.15)
+julia> t₀ = 0.15
+julia> ψ₀(t₀)
 -0.302141748563871 + 0.9298966854483709im
 ```
 or over a range of time instants `Array{Float64,1}`.

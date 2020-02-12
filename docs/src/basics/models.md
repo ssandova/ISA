@@ -60,7 +60,8 @@ z = AMFMmodel([ψ₀,ψ₁,ψ₂])
 ## Evaluating an AM--FM Model
 Once an  **AM--FM model** `AMFMmodel` is defined it can be evaluated at a time instant `Float64`
 ```
-julia> z(0.15)
+julia> t₀ = 0.15
+julia> z(t₀)
 -0.1844131722041218 + 1.146808452231523im
 ```
 or over a range of time instants `Array{Float64,1}`.
