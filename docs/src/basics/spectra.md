@@ -42,3 +42,8 @@ isaPlot3d(𝑆, t)
 ```
 
 [![](https://raw.githubusercontent.com/ssandova/ISAdocs/master/images/ISexample.png)](https://raw.githubusercontent.com/ssandova/ISAdocs/master/images/ISexample.png)
+
+
+NOTE: isaPlot3d() is still under development.
+
+~!~ MORE/BETTER VISUALIZATION TOOLS ARE CURRENTLY IN DEVELOPMENT ~!~

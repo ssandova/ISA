@@ -8,7 +8,7 @@
 3) Enter the package manager in REPL by pressing `]`  then add the package by typing `dev ISA` rather than `add ISA`.
 
 
-## Documentation (under development)
+## Documentation
 [https://ssandova.github.io/ISAdocs/](https://ssandova.github.io/ISAdocs/)
 
 
