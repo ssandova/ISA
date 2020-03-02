@@ -1,12 +1,12 @@
 
-using Plots
+import Plots
 
 #Construct isaPlot3d from type AMFMmodel called with a time index using PlotsGR backend
-function isaPlot3d(z::AMFMmodel,t::Vector{Float64})
+function isaPlot3d_PlotsGR(z::AMFMmodel,t::Vector{Float64})
     for i in 1:length(z.comps)
         a_max = 1 #need to finish
         if i==1
-plot3d(
+Plots.plot3d(
     t,
     z.comps[i].ω.(t),
     real.(z.comps[i](t)),
@@ -25,8 +25,8 @@ plot3d(
     foreground_color=:white,
 )
         else
-            plot3d!( t, z.comps[i].ω.(t), real.(z.comps[i](t)) , c = cmap[ max.(min.(round.(Int, abs.(z.comps[i].a.(t)) .* 256/a_max ),256),1) ], linealpha = max.(min.( abs.(z.comps[i].a.(t)).^(1/2) .* 1/a_max ,1),0) )
+            Plots.plot3d!( t, z.comps[i].ω.(t), real.(z.comps[i](t)) , c = cmap[ max.(min.(round.(Int, abs.(z.comps[i].a.(t)) .* 256/a_max ),256),1) ], linealpha = max.(min.( abs.(z.comps[i].a.(t)).^(1/2) .* 1/a_max ,1),0) )
         end
     end
-    current()
+    Plots.current()
 end

@@ -10,11 +10,21 @@ end
 
 #Load specific backend
 using LaTeXStrings
-if (true)
-    include("backends/plotsGRBackend.jl")
-else
-    include("backends/plotsMakieBackend.jl")
+include("backends/plotsGRBackend.jl")
+include("backends/plotsMakieBackend.jl")
+
+
+function isaPlot3d(z::AMFMmodel,t::Vector{Float64}; backend="PlotsGR")
+    if backend=="Makie"
+        isaPlot3d_Makie(z::AMFMmodel,t::Vector{Float64})
+    else
+        isaPlot3d_PlotsGR(z::AMFMmodel,t::Vector{Float64})
+    end
 end
+
+
+
+
 function isaPlot3d(z::AMFMmodel,t::StepRangeLen)
      return isaPlot3d(z,collect(t))
 end
