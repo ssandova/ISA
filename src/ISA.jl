@@ -9,4 +9,7 @@ export AMFMmodel, fourierSeries
 include("plots/isaPlots.jl")
 export isaPlot3d
 
+include("decomp/emd.jl")
+export findLocalMaxima, SIFT, EMD, ℂSIFT, ℂEMD
+
 end # module
