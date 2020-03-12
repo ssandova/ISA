@@ -1,6 +1,6 @@
 import Dierckx #for cubic spline interplation
 
-function findLocalMaxima(signal::Vector; angle=0.0,  includeEdge = :false)
+function findLocalMaxima(signal::Vector; angle=0.0, includeEdge=:false)::Tuple{Array{Int64,1},Array{Float64,1}}
   Inds = Int64[]
   signal = real.(exp(-1im*angle)*signal)
   if includeEdge #include maxima on edges
@@ -28,7 +28,7 @@ function findLocalMaxima(signal::Vector; angle=0.0,  includeEdge = :false)
   return IndsVals = (Inds, Vals)
 end
 
-function SIFT(r::Vector{Float64}; siftStopThresh = 1e-6, includeEdge = :true)
+function SIFT(r::Vector{Float64}; siftStopThresh=1e-6, includeEdge=:true)
   L = length(r)
   eStart = round(Int,L/4); eStop = round(Int,3L/4); eL = length(eStart:eStop)
   while true
@@ -48,7 +48,7 @@ function SIFT(r::Vector{Float64}; siftStopThresh = 1e-6, includeEdge = :true)
   end
 end
 
-function EMD(x::Vector{Float64}; emdStopThresh = 1e-2, siftStopThresh = 1e-6, includeEdge = :true)
+function EMD(x::Vector{Float64}; emdStopThresh = 1e-2, siftStopThresh = 1e-6, includeEdge = :true)::Array{Vector{Float64},1}
   IMF = Vector{Float64}[]
   L = length(x); M = maximum(abs.(x))
   eStart = round(Int,L/4); eStop = round(Int,3L/4); eL = length(eStart:eStop)
@@ -86,7 +86,7 @@ function ℂSIFT(r::Vector{ComplexF64}; D = 4, siftStopThresh = 1e-3, includeEdg
   return r
 end
 
-function ℂEMD(z::Vector{ComplexF64}; emdStopThresh = 1e-2, D = 4, siftStopThresh = 1e-3, includeEdge = :true)
+function ℂEMD(z::Vector{ComplexF64}; emdStopThresh=1e-2, D=4, siftStopThresh=1e-3, includeEdge=:true)::Array{Vector{ComplexF64},1}
   IMF = Vector{ComplexF64}[]
   L = length(z); M = maximum(abs.(z))
   eStart = round(Int,L/4); eStop = round(Int,3L/4); eL = length(eStart:eStop)
