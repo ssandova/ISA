@@ -1,6 +1,8 @@
 
 using ISA
 
+
+function main()
 #DEFINE COMPONENT
 a₀(t) = exp(-t^2)
 ω₀(t) = 15
@@ -22,24 +24,10 @@ A[1].t
 isaPlot3d(A)
 
 
+end
 
 
 
-
-length(A)
-
-import Plots
-i=1
-a_max = 1 #need to finish
-Plots.plot3d( A[i].t,
-A[i].ω,
-A[i].s,
-c = ISA.cmap[max.(min.(round.(Int, A[i].a .* 256 / a_max), 256), 1)],
-linealpha = max.(min.(A[i].a .^ (1 / 2) .* 1 / a_max, 1), 0, ),)
-
-
-
-using LaTeXStrings
 
 
 function isaPlot3d_PlotsGR2(ψₖ::Array{AMFMcompN,1})

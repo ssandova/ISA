@@ -35,19 +35,17 @@ function isaPlot3d_PlotsGR(z::AMFMmodel,t::Vector{Float64})
     Plots.current()
 end
 
-#NOT WORKING!!!!!!!!!!!!!!
-function isaPlot3d_PlotsGR(Ψ::Array{AMFMcompN,1})
+#Construct isaPlot3d from Array of Numerical AMFM Componets using PlotsGR backend
+function isaPlot3d_PlotsGR(ψₖ::Array{AMFMcompN,1})
     a_max = 1 #need to finish
-    for k in 1:length(Ψ)
-        ψₖ::AMFMcompN = Ψ[k]
-
+    for k in 1:length(ψₖ)
         if k==1
-            Plots.plot3d( ψₖ.t,
-            ψₖ.ω,
-            ψₖ.s,
-            c = ISA.cmap[max.(min.(round.(Int, ψₖ.a .* 256 / a_max), 256), 1)],
-            linealpha = max.(min.(ψₖ.a .^ (1 / 2) .* 1 / a_max, 1), 0, ),
-            xlims = (minimum(t), maximum(t)),
+            Plots.plot3d( ψₖ[k].t,
+            ψₖ[k].ω,
+            ψₖ[k].s,
+            c = ISA.cmap[max.(min.(round.(Int, ψₖ[k].a .* 256 / a_max), 256), 1)],
+            linealpha = max.(min.(ψₖ[k].a .^ (1 / 2) .* 1 / a_max, 1), 0, ),
+            xlims = (minimum(ψₖ[k].t), maximum(ψₖ[k].t)),
             ylims = (-5, 20),
             zlims = (-1, 1),
             legend = :false,
@@ -60,11 +58,11 @@ function isaPlot3d_PlotsGR(Ψ::Array{AMFMcompN,1})
             foreground_color=:white,
             )
         else
-            Plots.plot3d!(  ψₖ.t,
-                            ψₖ.ω,
-                            ψₖ.s,
-                            c = ISA.cmap[ max.(min.(round.(Int, ψₖ.a .* 256/a_max ),256),1) ],
-                            linealpha = max.(min.( ψₖ.a.^(1/2) .* 1/a_max ,1),0) )
+            Plots.plot3d!(  ψₖ[k].t,
+                            ψₖ[k].ω,
+                            ψₖ[k].s,
+                            c = ISA.cmap[ max.(min.(round.(Int, ψₖ[k].a .* 256/a_max ),256),1) ],
+                            linealpha = max.(min.( ψₖ[k].a.^(1/2) .* 1/a_max ,1),0) )
         end
     end
     Plots.current()
