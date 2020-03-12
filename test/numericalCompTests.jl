@@ -1,5 +1,6 @@
 
 using ISA
+using Plots
 
 
 function main()
@@ -26,8 +27,11 @@ t = -1.0:0.01:1.0
 ψ₀Num = AMFMdemod(ψ₀Vec,t)
 ψ₁Num = AMFMdemod(ψ₁Vec,t)
 
-isaPlot3d([ψ₀Num,ψ₁Num])
+p1 = isaPlot3d([ψ₀Num,ψ₁Num])
 
+p2 = isaPlot3d(ψ₀Num)
+
+plot(p1,p2)
 end
 
 main()

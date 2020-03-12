@@ -79,11 +79,37 @@ function isaPlot3d(C::Tuple{Function,Function,Real}, t::StepRangeLen; backend="P
     end
 end
 
+
+
+
+
+
 #Construction of an isaPlot3d from a numerical component
 function isaPlot3d(Ψ::Array{AMFMcompN,1}; backend="PlotsGR")
     if backend=="Makie"
         isaPlot3d_Makie(Ψ)
     else
         isaPlot3d_PlotsGR(Ψ)
+    end
+end
+function isaPlot3d(ψ::AMFMcompN; backend="PlotsGR")
+    if backend=="Makie"
+        isaPlot3d_Makie([ψ])
+    else
+        isaPlot3d_PlotsGR([ψ])
+    end
+end
+function isaPlot3d(ψ::Vector{ComplexF64}, t::Vector{Float64}; backend="PlotsGR")
+    if backend=="Makie"
+        isaPlot3d_Makie([AMFMdemod(ψ,t)])
+    else
+        isaPlot3d_PlotsGR([AMFMdemod(ψ,t)])
+    end
+end
+function isaPlot3d(ψ::Vector{ComplexF64}, t::StepRangeLen; backend="PlotsGR")
+    if backend=="Makie"
+        isaPlot3d_Makie([AMFMdemod(ψ,collect(t))])
+    else
+        isaPlot3d_PlotsGR([AMFMdemod(ψ,collect(t))])
     end
 end
