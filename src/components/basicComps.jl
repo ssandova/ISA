@@ -35,7 +35,7 @@ function (ψ::AMFMcomp)(t::Vector{Float64})
   a, ω, φ = ψ.a, ψ.ω, ψ.φ
   A = quadgk.(ω, 0.0, t)
   θ = [ A[i][1] for i in 1:length(t) ]
-  a.(t) .* exp.( π*2im .* ( θ .+ φ ) )
+  a.(t) .* exp.( 1im .* ( θ .+ φ ) )
 end
 
 function (ψ::AMFMcomp)(t::Float64)

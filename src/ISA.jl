@@ -3,6 +3,10 @@ module ISA
 include("components/basicComps.jl")
 export AMFMcomp
 
+include("components/numericalComps.jl")
+include("demod/demod.jl")
+export derivApprox, AMFMdemod, AMFMcompN
+
 include("models/basicModels.jl")
 export AMFMmodel, fourierSeries
 
@@ -11,5 +15,6 @@ export isaPlot3d
 
 include("decomp/emd.jl")
 export findLocalMaxima, SIFT, EMD, ℂSIFT, ℂEMD
+
 
 end # module
