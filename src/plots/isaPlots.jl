@@ -41,9 +41,9 @@ function isaPlot3d(S::Array{Tuple{Function,Function,Real},1}, t::Vector{Float64}
 end
 function isaPlot3d(S::Array{Tuple{Function,Function,Real},1}, t::StepRangeLen; backend="PlotsGR")
     if backend=="Makie"
-        isaPlot3d_Makie(S,collect(t))
+        isaPlot3d_Makie(AMFMmodel(S),collect(t))
     else
-        isaPlot3d_PlotsGR(S,collect(t))
+        isaPlot3d_PlotsGR(AMFMmodel(S),collect(t))
     end
 end
 
@@ -57,25 +57,25 @@ function isaPlot3d(ψ::AMFMcomp, t::Vector{Float64}; backend="PlotsGR")
 end
 function isaPlot3d(ψ::AMFMcomp, t::StepRangeLen; backend="PlotsGR")
     if backend=="Makie"
-        isaPlot3d_Makie(S,collect(t))
+        isaPlot3d_Makie(AMFMmodel([ψ]),collect(t))
     else
-        isaPlot3d_PlotsGR(S,collect(t))
+        isaPlot3d_PlotsGR(AMFMmodel([ψ]),collect(t))
     end
 end
 
 #Construction of an isaPlot3d from an canonical triplet
 function isaPlot3d(C::Tuple{Function,Function,Real}, t::Vector{Float64}; backend="PlotsGR")
     if backend=="Makie"
-        isaPlot3d_Makie(AMFMcomp(C), t)
+        isaPlot3d_Makie(AMFMmodel([AMFMcomp(C)]), t)
     else
-        isaPlot3d_PlotsGR(AMFMcomp(C), t)
+        isaPlot3d_PlotsGR(AMFMmodel([AMFMcomp(C)]), t)
     end
 end
 function isaPlot3d(C::Tuple{Function,Function,Real}, t::StepRangeLen; backend="PlotsGR")
     if backend=="Makie"
-        isaPlot3d_Makie(S,collect(t))
+        isaPlot3d_Makie(AMFMmodel([AMFMcomp(C)]),collect(t))
     else
-        isaPlot3d_PlotsGR(S,collect(t))
+        isaPlot3d_PlotsGR(AMFMmodel([AMFMcomp(C)]),collect(t))
     end
 end
 

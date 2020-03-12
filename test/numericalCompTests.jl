@@ -10,57 +10,24 @@ a₀(t) = exp(-t^2)
 𝐶₀ = Tuple([a₀,ω₀,φ₀])
 ψ₀ = AMFMcomp(𝐶₀)
 
+#DEFINE COMPONENT
+a₁(t) = exp(-0.5t^2)
+ω₁(t) = 10
+φ₁ = 0
+𝐶₁ = Tuple([a₁,ω₁,φ₁])
+ψ₁ = AMFMcomp(𝐶₁)
+
 #COMPONENT OBSERVATION
 t = -1.0:0.01:1.0
-ψVec = ψ₀(t)
+ψ₀Vec = ψ₀(t)
+ψ₁Vec = ψ₁(t)
 
 #ESTIMATE NUMERICAL COMPONENT
-ψNum = AMFMdemod(ψVec,t)
+ψ₀Num = AMFMdemod(ψ₀Vec,t)
+ψ₁Num = AMFMdemod(ψ₁Vec,t)
 
-
-A = [ψNum]
-A[1].t
-
-isaPlot3d(A)
-
+isaPlot3d([ψ₀Num,ψ₁Num])
 
 end
 
-
-
-
-
-function isaPlot3d_PlotsGR2(ψₖ::Array{AMFMcompN,1})
-    for i in 1:length(ψₖ)
-        a_max = 1 #need to finish
-        if i==1
-            Plots.plot3d( ψₖ[i].t,
-            ψₖ[i].ω,
-            ψₖ[i].s,
-            c = ISA.cmap[max.(min.(round.(Int, ψₖ[i].a .* 256 / a_max), 256), 1)],
-            linealpha = max.(min.(ψₖ[i].a .^ (1 / 2) .* 1 / a_max, 1), 0, ),
-            xlims = (minimum(t), maximum(t)),
-            ylims = (-5, 20),
-            zlims = (-1, 1),
-            legend = :false,
-            framestyle = :origin,
-            xlab = L"t",
-            ylab = L"\omega(t)",
-            zlab = L"x(t)",
-            camera = (20,80),
-            background_color=ISA.cmap[1],
-            foreground_color=:white,
-            )
-        else
-            Plots.plot3d!(  ψₖ[i].t,
-                            ψₖ[i].ω,
-                            ψₖ[i].s,
-                            c = cmap[ max.(min.(round.(Int, ψₖ[i].a .* 256/a_max ),256),1) ],
-                            linealpha = max.(min.( ψₖ[i].a.^(1/2) .* 1/a_max ,1),0) )
-        end
-    end
-    Plots.current()
-end
-
-
-isaPlot3d_PlotsGR2(A)
+main()
