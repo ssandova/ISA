@@ -3,10 +3,10 @@
 using ISA
 using Plots
 
-Ts = 0.001
-fs=1/Ts
-t = collect(0.0:Ts:1.0)
-z = exp.(1im*(2*π*200t))
+
+fs=40000.0
+t = collect(0.0:1/fs:1.0)
+z = exp.(1im*(2*π*10000t))
 windowFunction = ones(Float64,25)
 frameAdvance = 1
 

@@ -10,24 +10,32 @@ function isaPlot3d_PlotsGR(z::AMFMmodel,t::Vector{Float64};
     s_min = -s_max,
     t_max = minimum(t),
     t_min = maximum(t),
+    FreqUnits = "rad/s",
     )
-    Plots.plot3d(
+    if FreqUnits == "rad/s"
+         Fnorm = 1
+     elseif FreqUnits == "Hz"
+         Fnorm = 1/2π
+     else
+         error("invalid FreqUnits")
+     end
+     Plots.plot3d(
         xlims = (t_max, t_min),
-        ylims = (ω_min, ω_max),
+        ylims = (Fnorm*ω_min, Fnorm*ω_max),
         zlims = (s_min, s_max),
         legend = :false,
         framestyle = :origin,
-        xlab = L"t",
-        ylab = L"\omega(t)",
-        zlab = L"x(t)",
+        xlab = "time",
+        ylab = "freq ("*FreqUnits*")",
+        zlab = "real",
         camera = (20,80),
-        background_color=cmap[1],
+        background_color=ISA.cmap[1],
         foreground_color=:white,
         )
     for k in 1:length(z.comps)
         Plots.plot3d!(
             t,
-            z.comps[k].ω.(t),
+            Fnorm.*z.comps[k].ω.(t),
             real.(z.comps[k](t)),
             c = ISA.cmap[ max.(min.(round.(Int, abs.(z.comps[k].a.(t)) .* 256/a_max ),256),1) ],
             linealpha = max.(min.( abs.(z.comps[k].a.(t)).^(1/2) .* 1/a_max ,1),0)
@@ -45,16 +53,24 @@ function isaPlot3d_PlotsGR(𝚿ₖ::Array{AMFMcompN,1};
     s_min = -s_max,
     t_max = maximum([maximum(𝚿ₖ[k].t) for k in 1:length(𝚿ₖ)]),
     t_min = minimum([minimum(𝚿ₖ[k].t) for k in 1:length(𝚿ₖ)]),
+    FreqUnits = "rad/s",
     )
+    if FreqUnits == "rad/s"
+         Fnorm = 1
+     elseif FreqUnits == "Hz"
+         Fnorm = 1/2π
+     else
+         error("invalid FreqUnits")
+     end
     Plots.plot3d(
         xlims = (t_min, t_max),
-        ylims = (ω_min, ω_max),
+        ylims = (Fnorm*ω_min, Fnorm*ω_max),
         zlims = (s_min, s_max),
         legend = :false,
         framestyle = :origin,
-        xlab = L"t",
-        ylab = L"\omega(t)",
-        zlab = L"x(t)",
+        xlab = "time",
+        ylab = "freq ("*FreqUnits*")",
+        zlab = "real",
         camera = (20,80),
         background_color=ISA.cmap[1],
         foreground_color=:white,
@@ -62,7 +78,7 @@ function isaPlot3d_PlotsGR(𝚿ₖ::Array{AMFMcompN,1};
     for k in 1:length(𝚿ₖ)
         Plots.plot3d!(
             𝚿ₖ[k].t,
-            𝚿ₖ[k].ω,
+            Fnorm.*𝚿ₖ[k].ω,
             𝚿ₖ[k].s,
             c = ISA.cmap[ max.(min.(round.(Int, 𝚿ₖ[k].a .* 256/a_max ),256),1) ],
             linealpha = max.(min.( 𝚿ₖ[k].a.^(1/2) .* 1/a_max ,1),0)

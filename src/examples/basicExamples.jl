@@ -6,7 +6,7 @@ using ISA
 
 #DEFINE 0th CANONICAL TRIPLET
 a₀(t) = exp(-t^2)
-ω₀(t) = 2
+ω₀(t) = 100
 φ₀ = 0
 𝐶₀ = Tuple([a₀,ω₀,φ₀])
 
@@ -59,9 +59,9 @@ p1 = isaPlot3d(𝐶₁, t)
 
 p2 = isaPlot3d(ψ₀, t)
 
-p3 = isaPlot3d(z₀, t)
+p3 = isaPlot3d(z₀, t, FreqUnits="Hz")
 
-p4 = isaPlot3d(𝑆, t)
+p4 = isaPlot3d(𝑆, t, FreqUnits="Hz")
 
 using Plots
 plot(p1,p2,p3,p4)
