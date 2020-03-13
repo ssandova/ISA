@@ -28,10 +28,9 @@ t = -1.0:0.01:1.0
 ψ₁Num = AMFMdemod(ψ₁Vec,t)
 
 p1 = isaPlot3d([ψ₀Num,ψ₁Num])
-
 p2 = isaPlot3d(ψ₀Num)
-
 plot(p1,p2)
+
 end
 
 main()
