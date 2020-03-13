@@ -17,6 +17,6 @@ include("decomp/emd.jl")
 export findLocalMaxima, SIFT, EMD, ℂSIFT, ℂEMD
 
 include("TFDs/TFDs.jl")
-export frame, STFT
+export frameSignal, STFT
 
 end # module

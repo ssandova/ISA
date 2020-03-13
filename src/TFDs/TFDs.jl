@@ -1,15 +1,16 @@
 
 using DSP, AbstractFFTs
 
-function frame(z::Vector{<:Number}, windowFunction::Vector{<:Number}, frameAdvance::Int64)
-    frameLength = length(windowFunction)
-    if iseven(frameLength); error("frame: frameLength must be odd"); end
-    L::Int64 = (frameLength-1)/2
-    zPadded = append!(append!(zeros(ComplexF64,L),z), zeros(ComplexF64,L)  )
-    return [ zPadded[1+i:length(frameLength)+i].*windowFunction  for i in 1:frameAdvance:length(z)]
+function frameSignal(z::Vector{<:Number}, windowFunction::Vector{<:Number}, frameAdvance::Int64)
+    local zPad = copy(z)
+    if iseven(length(windowFunction)); windowFunction=windowFunction[1:end-1]; end
+    frameLength=length(windowFunction);
+    padLen::Int64 = (frameLength-1)/2
+    prepend!(zPad, zeros(ComplexF64,padLen))
+    append!(zPad, zeros(ComplexF64,padLen))
+    return [ zPad[i:frameLength+i-1].*windowFunction  for i in 1:frameAdvance:length(z)]
 end
 
-function STFT(z::Vector{<:Number}, windowFunction::Vector{<:Number}, frameAdvance::Int64)
-    zₖ = frame(z, windowFunction, frameAdvance)
-    return ( fftshift.(fft.(zₖ)), fftshift(collect(0:2π/length(windowFunction):2π-2π/length(windowFunction))) )
+function STFT(z::Vector{<:Number}, windowFunction::Vector{<:Number}, frameAdvance::Int64; fs=1)
+    return ( fftshift.(fft.(frameSignal(z, windowFunction, frameAdvance))), fftshift(collect(AbstractFFTs.fftfreq(length(windowFunction), fs))) )
 end
