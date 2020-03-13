@@ -85,31 +85,31 @@ end
 
 
 #Construction of an isaPlot3d from a numerical component
-function isaPlot3d(Ψ::Array{AMFMcompN,1}; backend="PlotsGR")
+function isaPlot3d(𝚿ₖ::Array{AMFMcompN,1}; backend="PlotsGR")
     if backend=="Makie"
-        isaPlot3d_Makie(Ψ)
+        isaPlot3d_Makie(𝚿ₖ)
     else
-        isaPlot3d_PlotsGR(Ψ)
+        isaPlot3d_PlotsGR(𝚿ₖ)
     end
 end
-function isaPlot3d(ψ::AMFMcompN; backend="PlotsGR")
+function isaPlot3d(𝚿::AMFMcompN; backend="PlotsGR")
     if backend=="Makie"
-        isaPlot3d_Makie([ψ])
+        isaPlot3d_Makie([𝚿])
     else
-        isaPlot3d_PlotsGR([ψ])
+        isaPlot3d_PlotsGR([𝚿])
     end
 end
-function isaPlot3d(ψ::Vector{ComplexF64}, t::Vector{Float64}; backend="PlotsGR")
+function isaPlot3d(Ψ::Vector{ComplexF64}, t::Vector{Float64}; backend="PlotsGR")
     if backend=="Makie"
-        isaPlot3d_Makie([AMFMdemod(ψ,t)])
+        isaPlot3d_Makie([AMFMdemod(Ψ,t)])
     else
-        isaPlot3d_PlotsGR([AMFMdemod(ψ,t)])
+        isaPlot3d_PlotsGR([AMFMdemod(Ψ,t)])
     end
 end
-function isaPlot3d(ψ::Vector{ComplexF64}, t::StepRangeLen; backend="PlotsGR")
+function isaPlot3d(Ψ::Vector{ComplexF64}, t::StepRangeLen; backend="PlotsGR")
     if backend=="Makie"
-        isaPlot3d_Makie([AMFMdemod(ψ,collect(t))])
+        isaPlot3d_Makie([AMFMdemod(Ψ,collect(t))])
     else
-        isaPlot3d_PlotsGR([AMFMdemod(ψ,collect(t))])
+        isaPlot3d_PlotsGR([AMFMdemod(Ψ,collect(t))])
     end
 end
