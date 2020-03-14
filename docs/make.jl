@@ -5,12 +5,14 @@ makedocs(;
     format=Documenter.HTML(),
     pages=[
         "Home" => "index.md",
-        "Basics" =>
+        "ISA Basics" =>
                     ["Cannonical Triplets and Component Sets"   => "basics/triplets.md",
                      "AM--FM Components"     => "basics/components.md",
                      "AM--FM Models"         => "basics/models.md",
-                     "Instantaneous Spectra" => "basics/spectra.md",],
-
+                     "Instantaneous Spectra" => "basics/spectra.md",
+                     "Numerical Components"     => "basics/componentsNumerical.md",],
+        "Decomposition" => "decomposition/EMD.md",
+        "Distributions" => "distributions/STFT.md",
     ],
     repo="https://github.com/ssandova/ISA.jl/blob/{commit}{path}#L{line}",
     sitename="ISA.jl",
