@@ -13,6 +13,7 @@ makedocs(;
                      "Numerical Components"     => "basics/componentsNumerical.md",],
         "Decomposition" => "decomposition/EMD.md",
         "Distributions" => "distributions/STFT.md",
+        "Citation" => "cite.md",
     ],
     repo="https://github.com/ssandova/ISA.jl/blob/{commit}{path}#L{line}",
     sitename="ISA.jl",
