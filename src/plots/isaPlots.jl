@@ -12,6 +12,7 @@ end
 using LaTeXStrings
 include("backends/plotsGRBackend.jl")
 include("backends/plotsMakieBackend.jl")
+include("backends/plotsPlotlyBackend.jl")
 
 
 
@@ -19,6 +20,8 @@ include("backends/plotsMakieBackend.jl")
 function isaPlot3d(z::AMFMmodel, t::Vector{Float64}; backend="PlotsGR", FreqUnits="rad/s")
     if backend=="Makie"
         isaPlot3d_Makie(z,t )
+    elseif backend=="Plotly"
+        isaPlot3d_Plotly(z,t )
     else
         isaPlot3d_PlotsGR(z,t, FreqUnits=FreqUnits)
     end
@@ -28,6 +31,8 @@ end
 function isaPlot3d(z::AMFMmodel, t::StepRangeLen; backend="PlotsGR", FreqUnits="rad/s")
     if backend=="Makie"
         isaPlot3d_Makie(z,collect(t)  )
+    elseif backend=="Plotly"
+        isaPlot3d_Plotly(z,collect(t)  )
     else
         isaPlot3d_PlotsGR(z,collect(t), FreqUnits=FreqUnits)
     end
@@ -37,12 +42,16 @@ end
 function isaPlot3d(S::Array{Tuple{Function,Function,Real},1}, t::Vector{Float64}; backend="PlotsGR", FreqUnits="rad/s")
     if backend=="Makie"
         isaPlot3d_Makie(AMFMmodel(S),t  )
+    elseif backend=="Plotly"
+        isaPlot3d_Makie(AMFMmodel(S),t  )
     else
         isaPlot3d_PlotsGR(AMFMmodel(S),t, FreqUnits=FreqUnits)
     end
 end
 function isaPlot3d(S::Array{Tuple{Function,Function,Real},1}, t::StepRangeLen; backend="PlotsGR", FreqUnits="rad/s")
     if backend=="Makie"
+        isaPlot3d_Makie(AMFMmodel(S),collect(t)  )
+    elseif backend=="Plotly"
         isaPlot3d_Makie(AMFMmodel(S),collect(t)  )
     else
         isaPlot3d_PlotsGR(AMFMmodel(S),collect(t), FreqUnits=FreqUnits)
@@ -53,12 +62,16 @@ end
 function isaPlot3d(ψ::AMFMcomp, t::Vector{Float64}; backend="PlotsGR", FreqUnits="rad/s")
     if backend=="Makie"
         isaPlot3d_Makie(AMFMmodel([ψ]), t )
+    elseif backend=="Plotly"
+        isaPlot3d_Makie(AMFMmodel([ψ]), t )
     else
         isaPlot3d_PlotsGR(AMFMmodel([ψ]), t, FreqUnits=FreqUnits)
     end
 end
 function isaPlot3d(ψ::AMFMcomp, t::StepRangeLen; backend="PlotsGR", FreqUnits="rad/s")
     if backend=="Makie"
+        isaPlot3d_Makie(AMFMmodel([ψ]),collect(t)  )
+    elseif backend=="Plotly"
         isaPlot3d_Makie(AMFMmodel([ψ]),collect(t)  )
     else
         isaPlot3d_PlotsGR(AMFMmodel([ψ]),collect(t), FreqUnits=FreqUnits)
@@ -69,12 +82,16 @@ end
 function isaPlot3d(C::Tuple{Function,Function,Real}, t::Vector{Float64}; backend="PlotsGR", FreqUnits="rad/s")
     if backend=="Makie"
         isaPlot3d_Makie(AMFMmodel([AMFMcomp(C)]), t  )
+    elseif backend=="Plotly"
+        isaPlot3d_Makie(AMFMmodel([AMFMcomp(C)]), t  )
     else
         isaPlot3d_PlotsGR(AMFMmodel([AMFMcomp(C)]), t, FreqUnits=FreqUnits)
     end
 end
 function isaPlot3d(C::Tuple{Function,Function,Real}, t::StepRangeLen; backend="PlotsGR", FreqUnits="rad/s")
     if backend=="Makie"
+        isaPlot3d_Makie(AMFMmodel([AMFMcomp(C)]),collect(t)  )
+    elseif backend=="Plotly"
         isaPlot3d_Makie(AMFMmodel([AMFMcomp(C)]),collect(t)  )
     else
         isaPlot3d_PlotsGR(AMFMmodel([AMFMcomp(C)]),collect(t), FreqUnits=FreqUnits)

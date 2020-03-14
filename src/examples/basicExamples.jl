@@ -65,4 +65,4 @@ p3 = isaPlot3d(z₀, t, FreqUnits="Hz")
 p4 = isaPlot3d(𝑆, t, FreqUnits="Hz")
 
 using Plots
-plot(p1,p2,p3,p4)
+Plots.plot(p1,p2,p3,p4)
