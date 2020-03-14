@@ -22,6 +22,7 @@ julia> t = Array(0.0:0.5:1.0); ψ₀(t)
 
 #Define type AMFMcomp as a struct of IA, IF, and phase reference
 struct AMFMcomp
+#References: Sandoval, Steven, and Phillip L. De Leon. "The Instantaneous Spectrum: A General Framework for Time-Frequency Analysis." IEEE Transactions on Signal Processing 66.21 (2018): 5679-5693.
   a::Function
   ω::Function
   φ::Real
@@ -32,6 +33,7 @@ AMFMcomp(a, ω) = AMFMcomp(a, ω, 0.0)
 
 #Method for type AMFMcomp when called with a time index
 function (ψ::AMFMcomp)(t::Vector{Float64})
+#References: Sandoval, Steven, and Phillip L. De Leon. "The Instantaneous Spectrum: A General Framework for Time-Frequency Analysis." IEEE Transactions on Signal Processing 66.21 (2018): 5679-5693.
   a, ω, φ = ψ.a, ψ.ω, ψ.φ
   A = quadgk.(ω, 0.0, t)
   θ = [ A[i][1] for i in 1:length(t) ]
@@ -49,5 +51,6 @@ end
 
 #Construction of type AMFMcomp from a cannonical triplet
 function AMFMcomp(triplet::Tuple{Function, Function, Real})
+#References: Sandoval, Steven, and Phillip L. De Leon. "The Instantaneous Spectrum: A General Framework for Time-Frequency Analysis." IEEE Transactions on Signal Processing 66.21 (2018): 5679-5693.
       return AMFMcomp(triplet[1],triplet[2],triplet[3])
 end

@@ -12,5 +12,6 @@ function frameSignal(z::Vector{<:Number}, windowFunction::Vector{<:Number}, fram
 end
 
 function STFT(z::Vector{<:Number}, windowFunction::Vector{<:Number}, frameAdvance::Int64; fs=1)
+#References: Lim, Jae S., and Alan V. Oppenheim. Advanced topics in signal processing. Prentice-Hall, Inc., 1987.
     return ( fftshift.(fft.(frameSignal(z, windowFunction, frameAdvance))), fftshift(collect(AbstractFFTs.fftfreq(length(windowFunction), fs))) )
 end

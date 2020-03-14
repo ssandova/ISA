@@ -29,6 +29,7 @@ function findLocalMaxima(signal::Vector; angle=0.0, includeEdge=:false)::Tuple{A
 end
 
 function SIFT(r::Vector{Float64}; siftStopThresh=1e-6, includeEdge=:true)
+#References: Huang, Norden E., et al. "The empirical mode decomposition and the Hilbert spectrum for nonlinear and non-stationary time series analysis." Proceedings of the Royal Society of London. Series A: mathematical, physical and engineering sciences 454.1971 (1998): 903-995.
   L = length(r)
   eStart = round(Int,L/4); eStop = round(Int,3L/4); eL = length(eStart:eStop)
   while true
@@ -49,6 +50,7 @@ function SIFT(r::Vector{Float64}; siftStopThresh=1e-6, includeEdge=:true)
 end
 
 function EMD(x::Vector{Float64}; emdStopThresh = 1e-2, siftStopThresh = 1e-6, includeEdge = :true)::Array{Vector{Float64},1}
+#References: Huang, Norden E., et al. "The empirical mode decomposition and the Hilbert spectrum for nonlinear and non-stationary time series analysis." Proceedings of the Royal Society of London. Series A: mathematical, physical and engineering sciences 454.1971 (1998): 903-995.
   IMF = Vector{Float64}[]
   L = length(x); M = maximum(abs.(x))
   eStart = round(Int,L/4); eStop = round(Int,3L/4); eL = length(eStart:eStop)
@@ -65,6 +67,7 @@ function EMD(x::Vector{Float64}; emdStopThresh = 1e-2, siftStopThresh = 1e-6, in
 end
 
 function ℂSIFT(r::Vector{ComplexF64}; D = 4, siftStopThresh = 1e-3, includeEdge = :true)
+#References: Rilling, Gabriel, et al. "Bivariate empirical mode decomposition." IEEE signal processing letters 14.12 (2007): 936-939.
   L = length(r)
   eStart = round(Int,L/4); eStop = round(Int,3L/4); eL = length(eStart:eStop)
   err = false
@@ -87,6 +90,7 @@ function ℂSIFT(r::Vector{ComplexF64}; D = 4, siftStopThresh = 1e-3, includeEdg
 end
 
 function ℂEMD(z::Vector{ComplexF64}; emdStopThresh=1e-2, D=4, siftStopThresh=1e-3, includeEdge=:true)::Array{Vector{ComplexF64},1}
+#References: Rilling, Gabriel, et al. "Bivariate empirical mode decomposition." IEEE signal processing letters 14.12 (2007): 936-939.
   IMF = Vector{ComplexF64}[]
   L = length(z); M = maximum(abs.(z))
   eStart = round(Int,L/4); eStop = round(Int,3L/4); eL = length(eStart:eStop)

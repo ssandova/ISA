@@ -1,5 +1,6 @@
 
 function AMFMdemod(ψ::Vector{ComplexF64}, t::Vector{Float64}; derivMethod="center11")::AMFMcompN
+#References: Sandoval, Steven, and Phillip L. De Leon. "The Instantaneous Spectrum: A General Framework for Time-Frequency Analysis." IEEE Transactions on Signal Processing 66.21 (2018): 5679-5693.
   return AMFMcompN( abs.(ψ),
                     derivApprox(unwrap(angle.(ψ)),fs=1/(t[2]-t[1]), method=derivMethod),
                     real.(ψ),
@@ -14,7 +15,7 @@ end
 
 
 function derivApprox(x::Vector{Float64}; fs=1.0, method="center11")::Vector{Float64}
-    x′ = zeros(Float64,length(x))
+#References: http://www.holoborodko.com/pavel/numerical-methods/numerical-derivative/central-differences/
     if method == "forward"
         if length(x)<2; error("derivApprox:vector too short for selected method"); end
         x′ = append!([NaN],fs.*diff(x))

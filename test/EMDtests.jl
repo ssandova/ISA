@@ -1,4 +1,5 @@
-using ISA, Plots
+using ISA #References: Sandoval, Steven, and Phillip L. De Leon. "The Instantaneous Spectrum: A General Framework for Time-Frequency Analysis." IEEE Transactions on Signal Processing 66.21 (2018): 5679-5693.
+using Plots
 
 sig = cos.(0.0:π/100:10pi) +  cos.( 5*(0.0:π/100:10pi))+  cos.( 20*(0.0:π/100:10pi))
 φ₁ = SIFT(sig)
