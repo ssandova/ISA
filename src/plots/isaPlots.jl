@@ -12,7 +12,7 @@ end
 using LaTeXStrings
 include("backends/plotsGRBackend.jl")
 include("backends/plotsMakieBackend.jl")
-include("backends/plotsPlotlyBackend.jl")
+include("backends/Plotly/plotsPlotlyBackend.jl")
 
 
 
@@ -21,7 +21,7 @@ function isaPlot3d(z::AMFMmodel, t::Vector{Float64}; backend="PlotsGR", FreqUnit
     if backend=="Makie"
         isaPlot3d_Makie(z,t )
     elseif backend=="Plotly"
-        isaPlot3d_Plotly(z,t )
+        plotlyBackend_plot(z,t,FreqUnits)
     else
         isaPlot3d_PlotsGR(z,t, FreqUnits=FreqUnits)
     end
