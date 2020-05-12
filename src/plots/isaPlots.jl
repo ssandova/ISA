@@ -12,16 +12,34 @@ end
 using LaTeXStrings
 include("backends/plotsGRBackend.jl")
 include("backends/plotsMakieBackend.jl")
-include("backends/plotsPlotlyBackend.jl")
+include("backends/plotlyBackend.jl")
 
 
-
+function isaPlot3d()
+    runPlotlyBackend()
+end
 
 function isaPlot3d(z::AMFMmodel, t::Vector{Float64}; backend="PlotsGR", FreqUnits="rad/s")
     if backend=="Makie"
         isaPlot3d_Makie(z,t )
     elseif backend=="Plotly"
-        isaPlot3d_Plotly(z,t )
+        dict = Dict()
+        components = []
+        for i in 1:length(z.comps)
+            componentDict = Dict()
+            y = -z.comps[i].ω.(t)
+            if FreqUnits == "Hz" y = y .* (1/(2π)) end
+            colorMap = cmap[max.(min.(round.(Int, abs.(z.comps[i].a.(t)) .* 256 / 1), 256), 1)]
+            colorMap = map(color -> "rgb($(red(color)),$(green(color)),$(blue(color)))", colorMap)
+            componentDict["x"] = -t .* -1
+            componentDict["y"] = y .* -1
+            componentDict["z"] = real.(z.comps[i](t))
+            componentDict["colorMap"] = colorMap
+            push!(components, componentDict)
+        end
+        dict["components"] = components
+        dict["freqUnits"] = FreqUnits
+        runPlotlyBackend(dict)
     else
         isaPlot3d_PlotsGR(z,t, FreqUnits=FreqUnits)
     end
@@ -32,7 +50,7 @@ function isaPlot3d(z::AMFMmodel, t::StepRangeLen; backend="PlotsGR", FreqUnits="
     if backend=="Makie"
         isaPlot3d_Makie(z,collect(t)  )
     elseif backend=="Plotly"
-        isaPlot3d_Plotly(z,collect(t)  )
+        runPlotlyBackend() # use runPlotlyBackend(dict) to specify data
     else
         isaPlot3d_PlotsGR(z,collect(t), FreqUnits=FreqUnits)
     end
@@ -43,7 +61,7 @@ function isaPlot3d(S::Array{Tuple{Function,Function,Real},1}, t::Vector{Float64}
     if backend=="Makie"
         isaPlot3d_Makie(AMFMmodel(S),t  )
     elseif backend=="Plotly"
-        isaPlot3d_Makie(AMFMmodel(S),t  )
+        runPlotlyBackend() # use runPlotlyBackend(dict) to specify data
     else
         isaPlot3d_PlotsGR(AMFMmodel(S),t, FreqUnits=FreqUnits)
     end
@@ -52,7 +70,7 @@ function isaPlot3d(S::Array{Tuple{Function,Function,Real},1}, t::StepRangeLen; b
     if backend=="Makie"
         isaPlot3d_Makie(AMFMmodel(S),collect(t)  )
     elseif backend=="Plotly"
-        isaPlot3d_Makie(AMFMmodel(S),collect(t)  )
+        runPlotlyBackend() # use runPlotlyBackend(dict) to specify data
     else
         isaPlot3d_PlotsGR(AMFMmodel(S),collect(t), FreqUnits=FreqUnits)
     end
@@ -63,7 +81,7 @@ function isaPlot3d(ψ::AMFMcomp, t::Vector{Float64}; backend="PlotsGR", FreqUnit
     if backend=="Makie"
         isaPlot3d_Makie(AMFMmodel([ψ]), t )
     elseif backend=="Plotly"
-        isaPlot3d_Makie(AMFMmodel([ψ]), t )
+        runPlotlyBackend() # use runPlotlyBackend(dict) to specify data
     else
         isaPlot3d_PlotsGR(AMFMmodel([ψ]), t, FreqUnits=FreqUnits)
     end
@@ -72,7 +90,7 @@ function isaPlot3d(ψ::AMFMcomp, t::StepRangeLen; backend="PlotsGR", FreqUnits="
     if backend=="Makie"
         isaPlot3d_Makie(AMFMmodel([ψ]),collect(t)  )
     elseif backend=="Plotly"
-        isaPlot3d_Makie(AMFMmodel([ψ]),collect(t)  )
+        runPlotlyBackend() # use runPlotlyBackend(dict) to specify data )
     else
         isaPlot3d_PlotsGR(AMFMmodel([ψ]),collect(t), FreqUnits=FreqUnits)
     end
@@ -83,7 +101,7 @@ function isaPlot3d(C::Tuple{Function,Function,Real}, t::Vector{Float64}; backend
     if backend=="Makie"
         isaPlot3d_Makie(AMFMmodel([AMFMcomp(C)]), t  )
     elseif backend=="Plotly"
-        isaPlot3d_Makie(AMFMmodel([AMFMcomp(C)]), t  )
+        runPlotlyBackend() # use runPlotlyBackend(dict) to specify data
     else
         isaPlot3d_PlotsGR(AMFMmodel([AMFMcomp(C)]), t, FreqUnits=FreqUnits)
     end
@@ -92,7 +110,7 @@ function isaPlot3d(C::Tuple{Function,Function,Real}, t::StepRangeLen; backend="P
     if backend=="Makie"
         isaPlot3d_Makie(AMFMmodel([AMFMcomp(C)]),collect(t)  )
     elseif backend=="Plotly"
-        isaPlot3d_Makie(AMFMmodel([AMFMcomp(C)]),collect(t)  )
+        runPlotlyBackend() # use runPlotlyBackend(dict) to specify data
     else
         isaPlot3d_PlotsGR(AMFMmodel([AMFMcomp(C)]),collect(t), FreqUnits=FreqUnits)
     end
