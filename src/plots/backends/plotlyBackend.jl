@@ -22,7 +22,10 @@ plotlyBackend_lineWidthSlider = nothing # Holds a number that the slider is curr
 plotlyBackend_XSlider = nothing # Holds an array of size 2 representing the [min, max] that the slider is currently on.
 plotlyBackend_YSlider = nothing # Holds an array of size 2 representing the [min, max] that the slider is currently on.
 plotlyBackend_ZSlider = nothing # Holds an array of size 2 representing the [min, max] that the slider is currently on.
-plotlyBackend_fileUploader = [nothing, nothing] # Holds the string values of file name and date modified.
+plotlyBackend_XSliderPushable = nothing # Holds [1] if checked
+plotlyBackend_YSliderPushable = nothing # Holds [1] if checked
+plotlyBackend_ZSliderPushable = nothing # Holds [1] if checked
+plotlyBackend_fileUploader = Dict("fileName" => nothing, "dateModified" => nothing) # Holds a dictionary with the keys: fileName and dateModified
 
 
 # ==============================================================================
@@ -39,6 +42,7 @@ plotlyBackend_YExtremities = nothing # An array of size 2 representing the [min,
 plotlyBackend_ZExtremities = nothing # An array of size 2 representing the [min, max] z extremities of the data.
 plotlyBackend_ZExtremitiesWithXMinProjection = nothing # An array of size 2 representing the [min, max] z extremities while showing FFT projection on X MIN.
 plotlyBackend_ZExtremitiesWithYMinProjection = nothing # An array of size 2 representing the [min, max] z extremities while showing real projection on Y MIN.
+plotlyBackend_soundData = nothing # A dictionary containing the key: "y" and "samplingFq" to create WAV files.
 
 
 # ==============================================================================
@@ -89,69 +93,41 @@ function plotlyBackend_hostDashServer()
         if (plotlyBackend_XSlider != xSlider) plotlyBackend_xSliderInteracted(xSlider) end
         if (plotlyBackend_YSlider != ySlider) plotlyBackend_ySliderInteracted(ySlider) end
         if (plotlyBackend_ZSlider != zSlider) plotlyBackend_zSliderInteracted(zSlider) end
-        if (fileContents != nothing && (plotlyBackend_fileUploader[1] != fileName || plotlyBackend_fileUploader[2] != fileDateModified)) plotlyBackend_uploaderInteracted(fileName, fileDateModified, fileContents) end
+        if (fileContents != nothing && (plotlyBackend_fileUploader["fileName"] != fileName || plotlyBackend_fileUploader["dateModified"] != fileDateModified)) plotlyBackend_uploaderInteracted(fileName, fileDateModified, fileContents) end
         return (data = plotlyBackend_data, layout = plotlyBackend_layout)
     end
 
-    callback!(app, callid"projectionChecklist.value, uploader.contents, uploader.filename, uploader.last_modified => zSliderDiv.children") do projectionChecklist, fileContents, fileName, fileDateModified
+    callback!(app, callid"zSliderPushable.value, projectionChecklist.value, uploader.contents, uploader.filename, uploader.last_modified => zSliderDiv.children") do zSliderPushable, projectionChecklist, fileContents, fileName, fileDateModified
+        zPushData = nothing
+        if (plotlyBackend_ZSliderPushable != zSliderPushable)
+            plotlyBackend_ZSliderPushableInteracted(zSliderPushable)
+            zPushData = (plotlyBackend_ZSliderPushable == [1])
+        end
         if plotlyBackend_projectionChecklist != projectionChecklist plotlyBackend_projectionCheckListInteracted(projectionChecklist) end
-        if (fileContents != nothing && (plotlyBackend_fileUploader[1] != fileName || plotlyBackend_fileUploader[2] != fileDateModified)) plotlyBackend_uploaderInteracted(fileName, fileDateModified, fileContents) end
-        zSliderExtremities = plotlyBackend_determineZSliderExtremities()
-        return dcc_rangeslider(
-            id = "zSlider",
-            min = zSliderExtremities[1],
-            max = zSliderExtremities[2],
-            tooltip = (
-                alwaysvisible = true,
-                placement = "bottom",
-            ),
-            step = (zSliderExtremities[2] - zSliderExtremities[1]) / 100,
-            value = zSliderExtremities
-        )
+        if (fileContents != nothing && (plotlyBackend_fileUploader["fileName"] != fileName || plotlyBackend_fileUploader["dateModified"] != fileDateModified)) plotlyBackend_uploaderInteracted(fileName, fileDateModified, fileContents) end
+        return plotlyBackend_determineZSliderDashComponent(zPushData)
     end
 
-    callback!(app, callid"playSoundButton.n_clicks => playSoundButtonOutletDiv.children") do numberOfClicks
-        if (numberOfClicks != -1) plotlyBackend_playSoundButtonInteracted() end
+    callback!(app, callid"downloadSoundButton.n_clicks => downloadSoundButtonOutletDiv.children") do numberOfClicks
+        if (numberOfClicks != -1) plotlyBackend_downloadSoundButtonInteracted() end
     end
 
     callback!(app, callid"saveButton.n_clicks => downloadStatusDiv.children") do numberOfClicks
         if numberOfClicks != -1 return plotlyBackend_saveButtonInteracted() end
     end
 
-    callback!(app, callid"uploader.contents, uploader.filename, uploader.last_modified => uploadFileDiv.children, xSliderDiv.children, ySliderDiv.children") do fileContents, fileName, fileDateModified
-        if (fileContents != nothing && (plotlyBackend_fileUploader[1] != fileName || plotlyBackend_fileUploader[2] != fileDateModified)) plotlyBackend_uploaderInteracted(fileName, fileDateModified, fileContents) end
-        sleep(1) # Purposely make it 1 second slower to always show loading icon
-        xSliderMin = plotlyBackend_XExtremities[1]
-        xSliderMax = plotlyBackend_XExtremities[2]
-        xSliderStep = (xSliderMax - xSliderMin) / 100
-        xSliderValue = [xSliderMin, xSliderMax]
-        xSlider = dcc_rangeslider(
-            id = "xSlider",
-            min = xSliderMin,
-            max = xSliderMax,
-            tooltip = (
-                alwaysvisible = true,
-                placement = "bottom",
-            ),
-            step = xSliderStep,
-            value = xSliderValue
-        )
-        ySliderMin = plotlyBackend_YExtremities[1]
-        ySliderMax = plotlyBackend_YExtremities[2]
-        ySliderStep = (ySliderMax - ySliderMin) / 100
-        ySliderValue = [ySliderMin, ySliderMax]
-        ySlider = dcc_rangeslider(
-            id = "ySlider",
-            min = ySliderMin,
-            max = ySliderMax,
-            tooltip = (
-                alwaysvisible = true,
-                placement = "bottom",
-            ),
-            step = ySliderStep,
-            value = ySliderValue
-        )
-        return ["", xSlider, ySlider]
+    callback!(app, callid"xSliderPushable.value, ySliderPushable.value, uploader.contents, uploader.filename, uploader.last_modified => uploadFileDiv.children, xSliderDiv.children, ySliderDiv.children") do xSliderPushable, ySliderPushable, fileContents, fileName, fileDateModified
+        if (plotlyBackend_XSliderPushable != xSliderPushable) plotlyBackend_XSliderPushableInteracted(xSliderPushable) end
+        if (plotlyBackend_YSliderPushable != ySliderPushable) plotlyBackend_YSliderPushableInteracted(ySliderPushable) end
+        xPushData = (plotlyBackend_XSliderPushable == [1])
+        yPushData = (plotlyBackend_YSliderPushable == [1])
+        if (fileContents != nothing && (plotlyBackend_fileUploader["fileName"] != fileName || plotlyBackend_fileUploader["dateModified"] != fileDateModified))
+            plotlyBackend_uploaderInteracted(fileName, fileDateModified, fileContents)
+            sleep(1) # Purposely make it 1 second slower to always show loading icon
+            xPushData = nothing
+            yPushData = nothing
+        end
+        return ["", plotlyBackend_determineXSliderDashComponent(xPushData), plotlyBackend_determineYSliderDashComponent(yPushData)]
     end
 
     println("Deployed. CMD-click this link: http://127.0.0.1:8080")
@@ -169,17 +145,33 @@ end
 
 function plotlyBackend_xSliderInteracted(xSlider)
     global plotlyBackend_XSlider = xSlider
+    plotlyBackend_updateXMinProjectionLocation()
     plotlyBackend_updateLayout()
 end
 
 function plotlyBackend_ySliderInteracted(ySlider)
     global plotlyBackend_YSlider = ySlider
+    plotlyBackend_updateYMinProjectionLocation()
     plotlyBackend_updateLayout()
 end
 
 function plotlyBackend_zSliderInteracted(zSlider)
     global plotlyBackend_ZSlider = zSlider
+    plotlyBackend_updateZMinProjectionLocation()
     plotlyBackend_updateLayout()
+end
+
+function plotlyBackend_XSliderPushableInteracted(xSliderPushable)
+    global plotlyBackend_XSliderPushable = xSliderPushable
+end
+
+function plotlyBackend_YSliderPushableInteracted(ySliderPushable)
+    global plotlyBackend_YSliderPushable = ySliderPushable
+end
+
+
+function plotlyBackend_ZSliderPushableInteracted(zSliderPushable)
+    global plotlyBackend_ZSliderPushable = zSliderPushable
 end
 
 function plotlyBackend_lineWidthSliderInteracted(lineWidthSlider)
@@ -197,15 +189,18 @@ function plotlyBackend_projectionCheckListInteracted(projectionChecklist)
     plotlyBackend_updateXMinProjectionVisibility() # FFT Projection
     plotlyBackend_updateYMinProjectionVisibility() # Real Projection
     plotlyBackend_updateZMinProjectionVisibility() # STFT Projection
+    plotlyBackend_updateXMinProjectionLocation()
+    plotlyBackend_updateYMinProjectionLocation()
+    plotlyBackend_updateZMinProjectionLocation()
     plotlyBackend_updateLayout()
 end
 
-function plotlyBackend_playSoundButtonInteracted()
+function plotlyBackend_downloadSoundButtonInteracted()
     println("WAV Button Pressed")
-    x = [0:7999;]
-    y = cos.(2 * pi * x / 8000)
-    y = repeat([0.1, 0.5, 1], size(plotlyBackend_data[1]["y"])[1])
-    samplingFq = 200
+    values = plotlyBackend_data[end - 2]["z"] # Get the projection on the X MIN axis's z values
+    maxAbsoluteValue = max(abs(plotlyBackend_ZExtremitiesWithXMinProjection[1]), abs(plotlyBackend_ZExtremitiesWithXMinProjection[2]))
+    y = map(value -> (value / maxAbsoluteValue), values) # Formula: y = y divided by max(abs(Y))
+    samplingFq = trunc(Int, float(size(plotlyBackend_data[end - 2]["z"])[1]) / (plotlyBackend_XExtremities[2] - plotlyBackend_XExtremities[1]))
     fileName = "ISA Sound " * Dates.format(Dates.now(), "mm-dd-yyyy HH.MM.SS")
     filePath = "./downloads/$(fileName).wav"
     wavwrite(y, filePath, Fs=samplingFq)
@@ -226,7 +221,7 @@ function plotlyBackend_saveButtonInteracted()
 end
 
 function plotlyBackend_uploaderInteracted(fileName, fileDateModified, fileContents)
-    global plotlyBackend_fileUploader = [fileName, fileDateModified]
+    global plotlyBackend_fileUploader = Dict("fileName" => fileName, "dateModified" => fileDateModified)
     description = split(fileContents, ",")[1]
     data = split(fileContents, ",")[2]
     if !occursin("json", description)
@@ -252,6 +247,27 @@ end
 # Partially mutates an already assigned global variable. Make sure all global
 # variables are already assigned when using.
 
+function plotlyBackend_updateXMinProjectionLocation()
+    if plotlyBackend_data[end - 2]["visible"] && plotlyBackend_data[end - 2]["x"][1] != plotlyBackend_XSlider[1]
+        plotlyBackend_data[end - 2]["x"] .= plotlyBackend_XSlider[1]
+    end
+end
+
+function plotlyBackend_updateYMinProjectionLocation()
+    if plotlyBackend_data[end - 1]["visible"] && plotlyBackend_data[end - 1]["y"][1] != plotlyBackend_YSlider[1]
+        plotlyBackend_data[end - 1]["y"] .= plotlyBackend_YSlider[1]
+    end
+end
+
+function plotlyBackend_updateZMinProjectionLocation()
+    if plotlyBackend_data[end]["visible"] && plotlyBackend_data[end]["z"][1][1] != plotlyBackend_ZSlider[1]
+        onePercentBuffer = float(plotlyBackend_ZSlider[2] + plotlyBackend_ZSlider[1]) / float(100) # Sometimes if we put the plane exactly on Z-MIN, it gets hidden
+        for dimension in plotlyBackend_data[end]["z"]
+            dimension .= (plotlyBackend_ZSlider[1] + abs(onePercentBuffer))
+        end
+    end
+end
+
 function plotlyBackend_updateXMinProjectionVisibility()
     plotlyBackend_data[end - 2]["visible"] = plotlyBackend_determineChecklistStatus()["FFT"]
 end
@@ -262,7 +278,6 @@ end
 
 function plotlyBackend_updateZMinProjectionVisibility()
     plotlyBackend_data[end]["visible"] = plotlyBackend_determineChecklistStatus()["STFT"]
-    if plotlyBackend_data[end]["visible"] plotlyBackend_data[end]["z"] .= plotlyBackend_determineZSliderExtremities()[1] end # Make sure its on Z Min
 end
 
 function plotlyBackend_updateLayout()
@@ -286,7 +301,7 @@ function plotlyBackend_updateLayout()
 end
 
 function plotlyBackend_updateGlobalDataLineWidth()
-    for component in plotlyBackend_data
+    for component in plotlyBackend_data[1:end-1] # Make sure not to mess with Z-projection plane
         component["line"]["width"] = plotlyBackend_lineWidthSlider
     end
 end
@@ -295,7 +310,8 @@ end
 # ==============================================================================
 # MARK: - Assign Globals
 # ==============================================================================
-# Functions that completely assigns a global variable with a new value.
+# Functions that completely assigns a global variable with a new value. Note that
+# force assign functions have dependencies, so please be careful when using them.
 
 function plotlyBackend_assignAllGlobalVariablesSafely(dict)
     # Must be done in order
@@ -309,7 +325,17 @@ function plotlyBackend_assignAllGlobalVariablesSafely(dict)
     plotlyBackend_forceAssignGlobalYMinProjectionStuff(plotlyBackend_lineWidthSlider) # depends on global data & XYZ Extremities being set & X Min projection
     plotlyBackend_forceAssignGlobalSliderValues() # depends on global XYZ & XY min projection being set
     plotlyBackend_forceAssignGlobalZMinProjectionStuff(plotlyBackend_lineWidthSlider) # depends on global data & XYZ Extremities & Z Slider being set & XY Min projection
+    plotlyBackend_forceAssignSoundData() # depends on global data & XYZ Extremities being set & XYZ Min projection
     plotlyBackend_forceAssignGlobalLayout() # depends on global sliders & freqUnits & global view drop down being set
+end
+
+# REQUIRED DEPENDENCY: Global data & XYZ MIN Projection's extremities must be set
+function plotlyBackend_forceAssignSoundData()
+    values = plotlyBackend_data[end - 2]["z"] # Get the projection on the X MIN axis's z values
+    maxAbsoluteValue = max(abs(plotlyBackend_ZExtremitiesWithXMinProjection[1]), abs(plotlyBackend_ZExtremitiesWithXMinProjection[2]))
+    y = map(value -> (value / maxAbsoluteValue), values) # Formula: y = y divided by max(abs(Y))
+    samplingFq = trunc(Int, float(size(plotlyBackend_data[end - 2]["z"])[1]) / (plotlyBackend_XExtremities[2] - plotlyBackend_XExtremities[1]))
+    global plotlyBackend_soundData = Dict("y" => y, "samplingFq" => samplingFq)
 end
 
 # REQUIRED DEPENDENCY: Global XYZ & XYZ min projection must be assigned
@@ -410,26 +436,32 @@ end
 
 # REQUIRED DEPENDENCY: Global data & XYZ Extremities & XY MIN Projection & Z Slider must be assigned
 # If you need to loop through plotlyBackend_data make sure you cut the last 2 components
-# because they are just projections on the X MIN and Y MIN axis.
+# because they are just projections on the X MIN and Y MIN axis. This projection
+# is has O(N^2) data points so make sure it is reasonable in size or the UI will freeze
 function plotlyBackend_forceAssignGlobalZMinProjectionStuff(lineWidth)
-    x = plotlyBackend_data[1]["x"]
-    y = LinRange(plotlyBackend_YExtremities[1], plotlyBackend_YExtremities[2], size(x)[1])
-    z = repeat([plotlyBackend_determineZSliderExtremities()[1]], size(x)[1])
-    projectionLine = Dict(
-        "line" => Dict(
-            "color" => "rgb(0,255,0)",
-            "width" => lineWidth
-        ),
-        "mode" => "lines",
-        "type" => "scatter3d",
+    sizeOfProjection = 64
+    x = LinRange(plotlyBackend_XExtremities[1], plotlyBackend_XExtremities[2], sizeOfProjection) # must be length of z[1]
+    y = LinRange(plotlyBackend_YExtremities[1], plotlyBackend_YExtremities[2], sizeOfProjection) # must be length of z
+    z = [repeat([plotlyBackend_ZExtremities[1]], size(x)[1]) for _ in 1:size(y)[1]] # A 2D array of size: length(y) by length(x)
+    minIntensity = 1.0
+    maxIntensity = 0.0
+    intensities = [LinRange(0.0, 1.0, size(x)[1]) for _ in 1:size(z)[1]] # A 2D array that correlatates to each color a square is
+    projectionPlane = Dict(
+        "type" => "surface",
         "opacity" => 1.0,
+        "cmax" => maxIntensity,
+        "cmin" => minIntensity,
+        "showlegend" => false,
+        "showscale" => false,
+        "surfacecolor" => intensities,
+        "colorscale" => "Viridis",
         "x" => x,
         "y" => y,
         "z" => z,
         "visible" => plotlyBackend_determineChecklistStatus()["STFT"],
-        "showlegend" => true
+        "showlegend" => false
     )
-    push!(plotlyBackend_data, projectionLine)
+    push!(plotlyBackend_data, projectionPlane)
 end
 
 function plotlyBackend_assignGlobalDict(dict)
@@ -452,9 +484,9 @@ function plotlyBackend_assignGlobalData(dict, lineWidth)
             "type" => "scatter3d",
             "opacity" => 1.0,
             "visible" => true,
-            "x" => component["x"],
-            "y" => component["y"],
-            "z" => component["z"],
+            "x" => Float64.(component["x"]),
+            "y" => Float64.(component["y"]),
+            "z" => Float64.(component["z"]),
         )
         push!(data, myLine)
     end
@@ -495,6 +527,60 @@ end
 # ==============================================================================
 # Returns specific values based on the currently set global variables. Make sure
 # the global variables are assigned before using.
+
+function plotlyBackend_determineIfSignalIsAudiable()
+    # https://discourse.julialang.org/t/how-to-play-an-audio-in-julia/31881
+    lengthInSeconds = float(size(plotlyBackend_soundData["y"])[1]) / float(plotlyBackend_soundData["samplingFq"])
+    if lengthInSeconds < 0.5 return false end
+    if plotlyBackend_soundData["samplingFq"] < 4000 || plotlyBackend_soundData["samplingFq"] > 50000 return false end
+    return true
+end
+
+function plotlyBackend_determineXSliderDashComponent(pushData = nothing)
+    dcc_rangeslider(
+        id = "xSlider",
+        min = plotlyBackend_XExtremities[1],
+        max = plotlyBackend_XExtremities[2],
+        tooltip = (
+            alwaysvisible = true,
+            placement = "bottom",
+        ),
+        pushable = (pushData == true) ? (plotlyBackend_XSlider[2] - plotlyBackend_XSlider[1]) : false,
+        step = (plotlyBackend_XExtremities[2] - plotlyBackend_XExtremities[1]) / 100,
+        value = (pushData == nothing) ? [plotlyBackend_XExtremities[1], plotlyBackend_XExtremities[2]] : [plotlyBackend_XSlider[1], plotlyBackend_XSlider[2]]
+    )
+end
+
+function plotlyBackend_determineYSliderDashComponent(pushData = nothing)
+    dcc_rangeslider(
+        id = "ySlider",
+        min = plotlyBackend_YExtremities[1],
+        max = plotlyBackend_YExtremities[2],
+        tooltip = (
+            alwaysvisible = true,
+            placement = "bottom",
+        ),
+        pushable = (pushData == true) ? (plotlyBackend_YSlider[2] - plotlyBackend_YSlider[1]) : false,
+        step = (plotlyBackend_YExtremities[2] - plotlyBackend_YExtremities[1]) / 100,
+        value = (pushData == nothing) ? [plotlyBackend_YExtremities[1], plotlyBackend_YExtremities[2]] : [plotlyBackend_YSlider[1], plotlyBackend_YSlider[2]]
+    )
+end
+
+function plotlyBackend_determineZSliderDashComponent(pushData = nothing)
+    zSliderExtremities = plotlyBackend_determineZSliderExtremities()
+    return dcc_rangeslider(
+        id = "zSlider",
+        min = zSliderExtremities[1],
+        max = zSliderExtremities[2],
+        tooltip = (
+            alwaysvisible = true,
+            placement = "bottom",
+        ),
+        pushable = (pushData == true) ? (plotlyBackend_ZSlider[2] - plotlyBackend_ZSlider[1]) : false,
+        step = (zSliderExtremities[2] - zSliderExtremities[1]) / 100,
+        value = (pushData == nothing) ? zSliderExtremities : [plotlyBackend_ZSlider[1], plotlyBackend_ZSlider[2]]
+    )
+end
 
 # Returns a [min, max] extremity that should be assigned to the z slider
 function plotlyBackend_determineZSliderExtremities()
@@ -551,7 +637,7 @@ function plotlyBackend_determine3DScene()
         ),
         zaxis = (
             backgroundcolor = "rgba(140, 60, 250, 1)",
-            range = plotlyBackend_determineZSliderExtremities(),
+            range = plotlyBackend_ZSlider,
             showbackground = true,
             showgrid = false,
             showticklabels = true,
@@ -593,7 +679,7 @@ function plotlyBackend_determineXYScene()
         ),
         zaxis = (
             backgroundcolor = "rgba(140, 60, 250, 1)",
-            range = plotlyBackend_determineZSliderExtremities(),
+            range = plotlyBackend_ZSlider,
             showbackground = true,
             showgrid = false,
             showticklabels = false,
@@ -635,7 +721,7 @@ function plotlyBackend_determineXZScene()
         ),
         zaxis = (
             backgroundcolor = "rgba(140, 60, 250, 1)",
-            range = plotlyBackend_determineZSliderExtremities(),
+            range = plotlyBackend_ZSlider,
             showbackground = true,
             showgrid = false,
             showticklabels = true,
@@ -677,7 +763,7 @@ function plotlyBackend_determineYZScene()
         ),
         zaxis = (
             backgroundcolor = "rgba(140, 60, 250, 1)",
-            range = plotlyBackend_determineZSliderExtremities(),
+            range = plotlyBackend_ZSlider,
             showbackground = true,
             showgrid = false,
             showticklabels = true,
@@ -743,11 +829,12 @@ function plotlyBackend_createHTML()
             end,
             html_div(style = (display = "inline-block", transform = "translateY(-75%)"),) do
                 html_button(
-                    id = "playSoundButton",
+                    id = "downloadSoundButton",
                     n_clicks = -1,
-                    children = ["Play Sound"]
+                    children = ["Download Sound"],
+                    disabled = !plotlyBackend_determineIfSignalIsAudiable()
                 ),
-                html_div(id = "playSoundButtonOutletDiv")
+                html_div(id = "downloadSoundButtonOutletDiv")
             end
         end,
         dcc_graph(
@@ -762,17 +849,13 @@ function plotlyBackend_createHTML()
                 html_div(style = (display = "inline-block", marginRight = "20px", transform = "translateY(-5%)"),) do
                     html_p("Time Axis Traversal")
                 end,
-                html_div(id = "xSliderDiv", style = (width = "60%", display = "inline-block"),) do
-                    dcc_rangeslider(
-                        id = "xSlider",
-                        min = plotlyBackend_XExtremities[1],
-                        max = plotlyBackend_XExtremities[2],
-                        tooltip = (
-                            alwaysvisible = true,
-                            placement = "bottom",
-                        ),
-                        step = (plotlyBackend_XExtremities[2] - plotlyBackend_XExtremities[1]) / 100,
-                        value = [plotlyBackend_XExtremities[1], plotlyBackend_XExtremities[2]]
+                html_div(id = "xSliderDiv", style = (width = "50%", display = "inline-block", marginRight = "20px"),) do
+                    plotlyBackend_determineXSliderDashComponent()
+                end,
+                html_div(id = "xSliderPushableDiv", style = (width = "100px", display = "inline-block", transform = "translateY(-10%)"),) do
+                    dcc_checklist(
+                        id = "xSliderPushable",
+                        options = [(label = "Push Mode", value = 1)],
                     )
                 end
             end,
@@ -780,17 +863,13 @@ function plotlyBackend_createHTML()
                 html_div(style = (display = "inline-block", marginRight = "20px", transform = "translateY(-5%)"),) do
                     html_p("Frequency Axis Traversal")
                 end,
-                html_div(id = "ySliderDiv", style = (width = "60%", display = "inline-block"),) do
-                    dcc_rangeslider(
-                        id = "ySlider",
-                        min = plotlyBackend_YExtremities[1],
-                        max = plotlyBackend_YExtremities[2],
-                        tooltip = (
-                            alwaysvisible = true,
-                            placement = "bottom",
-                        ),
-                        step = (plotlyBackend_YExtremities[2] - plotlyBackend_YExtremities[1]) / 100,
-                        value = [plotlyBackend_YExtremities[1], plotlyBackend_YExtremities[2]]
+                html_div(id = "ySliderDiv", style = (width = "50%", marginRight = "20px", display = "inline-block"),) do
+                    plotlyBackend_determineYSliderDashComponent()
+                end,
+                html_div(id = "ySliderPushableDiv", style = (width = "100px", display = "inline-block", transform = "translateY(-10%)"),) do
+                    dcc_checklist(
+                        id = "ySliderPushable",
+                        options = [(label = "Push Mode", value = 1)],
                     )
                 end
             end,
@@ -798,20 +877,16 @@ function plotlyBackend_createHTML()
                 html_div(style = (display = "inline-block", marginRight = "20px", transform = "translateY(-5%)"),) do
                     html_p("Real Axis Traversal")
                 end,
-                html_div(id = "zSliderOutterDiv", style = (width = "60%", display = "inline-block"),) do
+                html_div(id = "zSliderOutterDiv", style = (width = "50%", marginRight = "20px", display = "inline-block"),) do
                     html_div(id = "zSliderDiv") do
-                        dcc_rangeslider(
-                            id = "zSlider",
-                            min = plotlyBackend_ZExtremities[1],
-                            max = plotlyBackend_ZExtremities[2],
-                            tooltip = (
-                                alwaysvisible = true,
-                                placement = "bottom",
-                            ),
-                            step = (plotlyBackend_ZExtremities[2] - plotlyBackend_ZExtremities[1]) / 100,
-                            value = [plotlyBackend_ZExtremities[1], plotlyBackend_ZExtremities[2]]
-                        )
+                        plotlyBackend_determineZSliderDashComponent()
                     end
+                end,
+                html_div(id = "zSliderPushableDiv", style = (width = "100px", display = "inline-block", transform = "translateY(-10%)"),) do
+                    dcc_checklist(
+                        id = "zSliderPushable",
+                        options = [(label = "Push Mode", value = 1)],
+                    )
                 end
             end
         end,
@@ -832,7 +907,7 @@ function plotlyBackend_createHTML()
             end,
             html_div(style = (width = "80%", display = "inline-block")) do
                 html_h3("Visualize a Different Signal"),
-                html_p("Instructions: This can take several seconds. Try not to interact with the UI while uploading a file. Upload a correctly formatted JSON file with valid data. Note: the key \'freqUnits\' is optional and is defaulted to \'rad/s\'. See valid file examples in ISA/downloads."),
+                html_p("Instructions: This can take several seconds. Try not to interact with the UI while uploading a file. Seldomly, the uploader will have troubles with layout. If this happens, just toggle the projection buttons and the layout should correct itself. If there are further issues, please reupload until correct. Make sure to upload a correctly formatted JSON file with valid data. Note: the key \'freqUnits\' is optional and is defaulted to \'rad/s\'. See valid file examples in ISA/downloads."),
                 dcc_loading(
                     type = "default",
                     children = [html_div(id = "uploadFileDiv",)]
