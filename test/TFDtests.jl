@@ -1,6 +1,4 @@
 using ISA #References: Sandoval, Steven, and Phillip L. De Leon. "The Instantaneous Spectrum: A General Framework for Time-Frequency Analysis." IEEE Transactions on Signal Processing 66.21 (2018): 5679-5693.
-using Plots
-
 
 fs=500
 t = collect(0.0:1/fs:2.0)
@@ -25,7 +23,11 @@ z = AMFMmodel(𝑆)
 
 
 
-p1 = isaPlot3d(z, t, FreqUnits="Hz")
+#p1 = isaPlot3d(z, t, FreqUnits="Hz")
+
+using Plots
+plotly()
+Plots.PlotlyBackend()
 
 
 windowFunction = ones(Float64,25)
@@ -33,6 +35,9 @@ frameAdvance = 1
 zₖ = frameSignal(z(t), windowFunction, frameAdvance)
 Z,freqs = STFT(z(t), windowFunction, frameAdvance,fs=fs)
 
-p2 = contour(t[1:frameAdvance:end], freqs, abs.(reduce(hcat,Z)), fill=:true, seriescolor=cgrad(ISA.cmap),levels=5 )
+s = surface(t[1:frameAdvance:end], freqs, abs.(reduce(hcat,Z)), color =cgrad(ISA.cmap), camera=(0,89.999) )
 
-plot(p1,p2,layout=(2,1))
+
+#p2 = contour(t[1:frameAdvance:end], freqs, abs.(reduce(hcat,Z)), fill=:true, seriescolor=cgrad(ISA.cmap),levels=5 )
+
+#plot(p1,p2,layout=(2,1))
